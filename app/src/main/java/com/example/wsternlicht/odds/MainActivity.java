@@ -1,10 +1,12 @@
 package com.example.wsternlicht.odds;
 
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,7 +16,6 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.Random;
-import java.util.logging.Handler;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-        Toast.makeText(MainActivity.this, "Have you chosen your odds? Enter them below.", Toast.LENGTH_LONG).show();
+        Toast.makeText(MainActivity.this, "Have you chosen your odds? Enter them above.", Toast.LENGTH_LONG).show();
     }
 
     public void calculateRandom(View view) {
@@ -47,6 +48,12 @@ public class MainActivity extends AppCompatActivity {
             return; //Wait for issue to be resolved so return to allow new button...
         }
         Toast.makeText(MainActivity.this, "Ready for your fate?", Toast.LENGTH_SHORT).show();
+        //Play drum noise if box is checked!
+        CheckBox checkBox = (CheckBox) findViewById(R.id.drumRoll);
+        if (checkBox.isChecked()) {
+            MediaPlayer mp = MediaPlayer.create(this, R.raw.drum_roll);
+            mp.start();
+        }
         //must be final so that we can change it at multiple times throughout the program.
         final TextView resultText = (TextView) findViewById(R.id.resultNumber);
         resultText.setText("...");
@@ -59,8 +66,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFinish(
             ) {
-                Integer.parseInt(minString);
-                Integer.parseInt(maxString);
                 int min = Integer.parseInt(minString);
                 int max = Integer.parseInt(maxString);
                 //calculate random with those variables
@@ -72,6 +77,14 @@ public class MainActivity extends AppCompatActivity {
         }.start();
     }
 
+    public void drumSoundOnSelection(View view) {
+        CheckBox checkBox = (CheckBox) findViewById(R.id.drumRoll);
+        if (checkBox.isChecked()) {
+            MediaPlayer mp = MediaPlayer.create(this, R.raw.drum_roll);
+            mp.start();
+        }
+
+    }
     public boolean checkIntegers(String min, String max) {
         if (min.matches("")) {
             Toast.makeText(MainActivity.this, "Enter an Integer >= 0 in the Min Box!", Toast.LENGTH_SHORT).show();
@@ -125,5 +138,7 @@ public class MainActivity extends AppCompatActivity {
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
     }
+
+
 }
 
